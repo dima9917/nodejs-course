@@ -3,30 +3,32 @@ console.log('Starting app.js');
 const fs = require('fs');
 const _ = require('lodash');
 const yargs = require('yargs');
+
 const notes = require('./notes.js');
 
-
 const argv = yargs.argv;
-var command = process.argv[2]
-console.log(`Command: ${command}`);
-console.log('process', process.argv);
+var command = argv._[0];
+console.log('Command: ', command);
 console.log('Yargs', argv);
 
-if(command == 'add'){    
-    notes.addNote(argv.title, argv.body);
-} else if (command == 'list'){
-    notes.getAll();
-} else if(command == 'read'){
-    notes.getNote(argv.title);
-} else if(command == 'remove'){
-    notes.removeNote(argv.title);
+if (command === 'add') {
+  var note = notes.addNote(argv.title, argv.body);
+  if (note) {
+    console.log('Note created');
+    console.log('--');
+    console.log(`Title: ${note.title}`);
+    console.log(`Body: ${note.body}`);
+  } else {
+    console.log('Note title taken');
+  }
+} else if (command === 'list') {
+  notes.getAll();
+} else if (command === 'read') {
+  notes.getNote(argv.title);
+} else if (command === 'remove') {
+  var noteRemoved = notes.removeNote(argv.title);
+  var message = noteRemoved ? 'Note was removed' : 'Note not found';
+  console.log(message);
 } else {
-    console.log('not recognized')
+  console.log('Command not recognized');
 }
-
-// console.log(_.isString(true));
-// console.log(_.isString('true'));
-// console.log(_.uniq([1,1,2,3,4,5,6,6, ]));
-// console.log(user);
-
-// fs.appendFileSync('greetings.txt', `Hello ${user.username}! You are ${notes.age}`);
